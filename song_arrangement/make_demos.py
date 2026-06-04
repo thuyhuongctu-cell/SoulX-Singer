@@ -94,6 +94,12 @@ STYLES = {
                       drums='soft',  mel_vel=104, ch_vel=58, arp=False),
     'acoustic':  dict(name='Acoustic',   tempo=96,  mel=24, ch=24, bass=32,
                       drums='pop',   mel_vel=104, ch_vel=58, arp=True),
+    'lofi':      dict(name='Lo-fi',      tempo=74,  mel=4,  ch=4,  bass=32,
+                      drums='soft',  mel_vel=96,  ch_vel=52, arp=True),
+    'edm':       dict(name='EDM',        tempo=128, mel=81, ch=81, bass=38,
+                      drums='edm',   mel_vel=108, ch_vel=58, arp=False),
+    'mekong':    dict(name='Dan gian Mekong', tempo=94, mel=73, ch=107, bass=32,
+                      drums='soft',  mel_vel=104, ch_vel=56, arp=True),
 }
 
 def drum_events(kind):
@@ -110,6 +116,10 @@ def drum_events(kind):
         elif kind == 'soft':
             if b % 4 == 0: ev.append((b, 0.3, 36, 80))
             ev.append((b, 0.1, 42, 45))
+        elif kind == 'edm':
+            ev.append((b, 0.2, 36, 110))                      # four-on-the-floor
+            if b % 2 == 1: ev.append((b, 0.2, 39, 95))        # clap 2,4
+            ev.append((b + 0.5, 0.1, 46, 70))                 # open hihat offbeat
     return ev
 
 def build(style_key, cfg):
