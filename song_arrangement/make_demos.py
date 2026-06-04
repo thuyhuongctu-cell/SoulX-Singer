@@ -177,7 +177,7 @@ for key, cfg in STYLES.items():
     print(f"OK {cfg['name']:12} -> {mp3} ({sz} KB)")
 
 # ---- 5b. Bản "có giọng" (bè choir Aah hát theo melody) cho vài phong cách ----
-for key in ['hanh_khuc', 'orchestra', 'ballad']:
+for key in STYLES:          # bản có giọng (choir) cho TẤT CẢ phong cách
     cfg = STYLES[key]
     midi = build(key, cfg, voice=True)
     midi_v = f"demo_{key}_voice.mid"; os.replace(midi, midi_v)
