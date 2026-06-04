@@ -3,6 +3,24 @@
 Bài hát gốc (**nhạc đỏ**) được **giữ nguyên giai điệu**, và tạo được **nhiều loại nhạc nền
 khác nhau** từ cùng một bài — đúng yêu cầu *"thay đổi được các loại nhạc nền khác nhau"*.
 
+---
+
+## 👉 CÁCH NGHE NHẠC (dành cho thầy)
+
+**Cách 1 — Nghe từng bản (đơn giản):**
+1. Bấm vào thư mục [`song_arrangement/demos/`](song_arrangement/demos/).
+2. Bấm vào một file `.mp3` (ví dụ `KhucCaTruongKinhTe_hanh_khuc.mp3`).
+3. Bấm nút **tải xuống (Download / mũi tên ⬇)** ở góc → file sẽ mở/nghe được.
+
+**Cách 2 — Tải HẾT về một lần (khuyên dùng):**
+1. Lên đầu kho, bấm nút xanh **`< > Code`**.
+2. Chọn **Download ZIP** → giải nén → có đủ tất cả file nhạc để nghe.
+
+> 📌 Tên file dễ hiểu: `..._hanh_khuc` = hành khúc, `..._ballad` = ballad, `..._pop` = pop…
+> File có chữ **`_giong`** = bản có bè hát theo giai điệu; **`_DAI`** = bản dài ~2–3 phút.
+
+---
+
 ## 🔗 Liên kết nhanh
 - **Pull Request (tổng hợp):** https://github.com/thuyhuongctu-cell/SoulX-Singer/pull/1
 - **Thư mục sản phẩm:** [`song_arrangement/`](song_arrangement/) → các file nhạc trong [`song_arrangement/demos/`](song_arrangement/demos/)
