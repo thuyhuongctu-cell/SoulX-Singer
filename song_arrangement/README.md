@@ -14,6 +14,8 @@ pop, acoustic...), và tạo được **bài hoàn chỉnh (giọng + nhạc)** 
 | `score.musicxml` / `score.mid` | Bản nhạc số hoá (MusicXML/MIDI) — *nền tảng melody* để phối lại |
 | `lyrics_raw.txt` | Text thô trích từ PDF (tham khảo) |
 | `Colab_doi_nen_nhac.ipynb` | **Notebook Google Colab** (GPU free): MusicGen-Melody tạo nhạc nền bám `score.mid` + ACE-Step tạo cả bài có giọng hát |
+| `Colab_video_nhac_AI.ipynb` | **Notebook tạo VIDEO NHẠC bằng AI**: sinh ảnh (Stable Diffusion) + ghép MP4 có hiệu ứng + lời chạy, đồng bộ audio |
+| `HUONG_DAN_DUNG_NGAY.md` | Hướng dẫn dùng ngay từng bước (Suno / Colab / MuseScore) |
 
 ## 🔧 Pipeline khuyến nghị (miễn phí, không cần GPU riêng)
 

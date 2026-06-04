@@ -61,6 +61,23 @@ Dùng `score.mid` (giai điệu từ bản nhạc của bạn) để nhạc nề
 
 ---
 
+## 🎬 CÁCH 2B — Video nhạc bằng AI (theo yêu cầu của thầy)
+
+Sau khi đã có file audio (`song_*.wav` có giọng, hoặc `backing_*.wav` không lời):
+
+1. Mở **`Colab_video_nhac_AI.ipynb`** trên Colab → bật **T4 GPU**.
+2. Chạy lần lượt: cài đặt → **upload file audio** → sinh ảnh AI → tạo lời chạy → ghép video.
+3. Ra file **`music_video.mp4`** (xem ngay trong notebook + tải về).
+
+**Làm 2 video theo ý thầy:**
+- Bản **có giọng hát + lời chạy**: upload `song_*.wav`, để `BURN_LYRICS = True`.
+- Bản **không lời (instrumental)**: upload `backing_*.wav`, đặt `BURN_LYRICS = False`.
+
+> Ảnh sinh theo chủ đề trường học / quê hương / tự hào (hợp nhạc đỏ). Sửa danh sách
+> `PROMPTS` trong notebook để đổi cảnh.
+
+---
+
 ## 🎼 CÁCH 3 — MuseScore (chính xác 100%, để in/biểu diễn)
 
 1. Tải **MuseScore 4** (miễn phí): https://musescore.org
