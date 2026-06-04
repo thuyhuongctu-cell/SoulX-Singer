@@ -39,4 +39,7 @@ deploy/
 
 # midi editor
 node_modules/
-dist/song_arrangement/KhucCaTruongKinhTe_TRONBO.zip
+dist/
+
+# generated audio bundle (regenerable via make_demos.py)
+song_arrangement/*.zip
