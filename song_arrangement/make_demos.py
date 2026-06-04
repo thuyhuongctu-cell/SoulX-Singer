@@ -122,14 +122,16 @@ def drum_events(kind):
             ev.append((b + 0.5, 0.1, 46, 70))                 # open hihat offbeat
     return ev
 
-def build(style_key, cfg):
+def build(style_key, cfg, voice=False):
     mf = MidiFile(ticks_per_beat=TPB)
     tempo_tr = MidiTrack(); mf.tracks.append(tempo_tr)
     tempo_tr.append(MetaMessage('set_tempo', tempo=int(60_000_000 / cfg['tempo']), time=0))
 
-    # melody
-    mel_ev = [(st, du * 0.95, m, cfg['mel_vel']) for st, du, m in melody]
-    mf.tracks.append(make_track(mel_ev, program=cfg['mel'], channel=0))
+    # melody (voice=True -> 'Choir Aahs' GM 52 hát theo giai điệu, ngân dài hơn)
+    mel_prog = 52 if voice else cfg['mel']
+    sustain = 0.99 if voice else 0.95
+    mel_ev = [(st, du * sustain, m, cfg['mel_vel']) for st, du, m in melody]
+    mf.tracks.append(make_track(mel_ev, program=mel_prog, channel=0))
 
     # chords (block hoặc arpeggio)
     ch_ev = []
@@ -173,5 +175,18 @@ for key, cfg in STYLES.items():
     sz = os.path.getsize(mp3) // 1024
     results.append((cfg['name'], mp3, sz))
     print(f"OK {cfg['name']:12} -> {mp3} ({sz} KB)")
+
+# ---- 5b. Bản "có giọng" (bè choir Aah hát theo melody) cho vài phong cách ----
+for key in ['hanh_khuc', 'orchestra', 'ballad']:
+    cfg = STYLES[key]
+    midi = build(key, cfg, voice=True)
+    midi_v = f"demo_{key}_voice.mid"; os.replace(midi, midi_v)
+    wav = f"demos/{key}_voice.wav"; mp3 = f"demos/KhucCaTruongKinhTe_{key}_giong.mp3"
+    subprocess.run(['fluidsynth', '-ni', '-g', '1.0', '-F', wav, '-r', '44100', SF2, midi_v],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['ffmpeg', '-y', '-i', wav, '-codec:a', 'libmp3lame', '-q:a', '4', mp3],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    os.remove(wav); os.remove(midi_v)
+    print(f"OK (giọng) {cfg['name']:12} -> {mp3} ({os.path.getsize(mp3)//1024} KB)")
 
 print("\nDuration ~", round(TOTAL * 60 / 100, 1), "s mỗi bản (tuỳ tempo)")
