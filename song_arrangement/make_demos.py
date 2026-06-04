@@ -102,9 +102,9 @@ STYLES = {
                       drums='soft',  mel_vel=104, ch_vel=56, arp=True),
 }
 
-def drum_events(kind):
+def drum_events(kind, total=None):
     ev = []  # (start,dur,pitch,vel) channel 9
-    nbeat = int(math.ceil(TOTAL))
+    nbeat = int(math.ceil(total if total is not None else TOTAL))
     for b in range(nbeat):
         if kind == 'march':
             ev.append((b, 0.2, 36, 100))                      # kick mỗi phách
@@ -162,6 +162,53 @@ def build(style_key, cfg, voice=False):
     mf.save(midi_path)
     return midi_path
 
+def build_long(style_key, cfg, repeats=2, intro=8.0, brk=2.0, outro=6.0, voice=False):
+    """Bản dài: dạo đầu + hát lặp `repeats` lần + nhạc kết. Giữ nguyên melody."""
+    base_names = [c[2] for c in chords]
+    mel_ext, ch_ext = [], []
+    cursor = 0.0
+    # intro vamp (chỉ nhạc nền)
+    t, bi = 0.0, 0
+    while t < intro:
+        ch_ext.append((cursor + t, min(WIN, intro - t), base_names[bi % len(base_names)]))
+        t += WIN; bi += 1
+    cursor += intro
+    for r in range(repeats):
+        off = cursor
+        for st, du, m in melody:  mel_ext.append((st + off, du, m))
+        for st, du, nm in chords: ch_ext.append((st + off, du, nm))
+        cursor += TOTAL
+        if r < repeats - 1:  # đoạn nối giữa 2 lần hát
+            t = 0.0
+            while t < brk:
+                ch_ext.append((cursor + t, min(WIN, brk - t), 'D')); t += WIN
+            cursor += brk
+    ch_ext.append((cursor, outro, 'G'))  # kết: giữ hợp âm chủ
+    cursor += outro
+    total_ext = cursor
+
+    mf = MidiFile(ticks_per_beat=TPB)
+    tt = MidiTrack(); mf.tracks.append(tt)
+    tt.append(MetaMessage('set_tempo', tempo=int(60_000_000 / cfg['tempo']), time=0))
+    mel_prog = 52 if voice else cfg['mel']
+    mf.tracks.append(make_track([(st, du * 0.97, m, cfg['mel_vel']) for st, du, m in mel_ext],
+                                program=mel_prog, channel=0))
+    ch_ev = []
+    for st, du, nm in ch_ext:
+        for p in chord_pitches(nm):
+            ch_ev.append((st, du * 0.98, p, cfg['ch_vel']))
+    mf.tracks.append(make_track(ch_ev, program=cfg['ch'], channel=1))
+    bass_ev = []
+    for st, du, nm in ch_ext:
+        bp = bass_pitch(nm)
+        bass_ev.append((st, du * 0.9, bp, 80))
+        if du >= 2: bass_ev.append((st + du / 2, du / 2 * 0.9, bp, 70))
+    mf.tracks.append(make_track(bass_ev, program=cfg['bass'], channel=2))
+    mf.tracks.append(make_track(drum_events(cfg['drums'], total_ext), program=None, channel=9))
+    midi_path = f"demo_{style_key}_long.mid"
+    mf.save(midi_path)
+    return midi_path
+
 os.makedirs("demos", exist_ok=True)
 results = []
 for key, cfg in STYLES.items():
@@ -188,5 +235,19 @@ for key in STYLES:          # bản có giọng (choir) cho TẤT CẢ phong cá
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.remove(wav); os.remove(midi_v)
     print(f"OK (giọng) {cfg['name']:12} -> {mp3} ({os.path.getsize(mp3)//1024} KB)")
+
+# ---- 5c. Bản DÀI (dạo đầu + hát 2 lần + kết) cho vài phong cách ----
+for key in ['hanh_khuc', 'orchestra', 'ballad', 'pop']:
+    cfg = STYLES[key]
+    midi = build_long(key, cfg, repeats=2)
+    wav = f"demos/{key}_long.wav"; mp3 = f"demos/KhucCaTruongKinhTe_{key}_DAI.mp3"
+    subprocess.run(['fluidsynth', '-ni', '-g', '1.0', '-F', wav, '-r', '44100', SF2, midi],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['ffmpeg', '-y', '-i', wav, '-codec:a', 'libmp3lame', '-q:a', '4', mp3],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    os.remove(wav); os.remove(midi)
+    d = float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration',
+              '-of','default=nw=1:nk=1',mp3]))
+    print(f"OK (dài) {cfg['name']:12} -> {mp3} ({int(d)}s)")
 
 print("\nDuration ~", round(TOTAL * 60 / 100, 1), "s mỗi bản (tuỳ tempo)")
