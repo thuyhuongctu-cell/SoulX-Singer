@@ -43,3 +43,8 @@ dist/
 
 # generated audio bundle (regenerable via make_demos.py)
 song_arrangement/*.zip
+
+# Teacher's original vocal & separated stems (KHÔNG public)
+song_arrangement/teacher_src/
+song_arrangement/sep30/
+song_arrangement/poc/
